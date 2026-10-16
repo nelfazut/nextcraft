@@ -82,7 +82,10 @@ flowchart TD
 
 ## 🚀 Installation Guide
 
-The application installs under the technical identifier **`artcraft`** in your Nextcloud custom applications folder (`custom_apps` or `apps`).
+> [!IMPORTANT]
+> **Directory Name & App ID**:
+> While the repository and project are named **`nextcraft`**, Nextcloud strictly requires the application folder inside `custom_apps/` (or `apps/`) to match its technical ID: **`artcraft`** (declared in `appinfo/info.xml`).
+> The [`deploy.sh`](deploy.sh) script automatically enforces this rule, sanitizes paths, and cleans up any conflicting folders.
 
 ### Method 1: Direct Container Deployment (Docker / Podman - Recommended)
 
@@ -124,10 +127,14 @@ An automated shell script is provided at the repository root:
 
 ```bash
 # Syntax: ./deploy.sh [TARGET_FOLDER_PATH] [CONTAINER_NAME]
-./deploy.sh /mnt/nextcloud/custom_apps/artcraft nextcloud_app
+./deploy.sh /mnt/nextcloud/custom_apps nextcloud_app
 ```
 
-The script copies the files, adjusts ownership, and executes `occ app:enable artcraft` automatically.
+The script handles the entire lifecycle automatically:
+- **Path Sanitization**: Guarantees the destination folder is named `artcraft` even if you pass `.../custom_apps` or `.../custom_apps/nextcraft`.
+- **Conflict Cleanup**: Automatically deletes any obsolete `nextcraft` directories on the host and inside the container to prevent Nextcloud registration errors.
+- **Permissions**: Adjusts `www-data` ownership and permissions both on the host and within the container.
+- **Activation & Caching**: Enables the app (`occ app:enable artcraft`) and refreshes asset caches with `occ maintenance:repair --include-expensive`.
 
 > [!NOTE]
 > When enabling the app for the first time via `occ app:enable artcraft`, Nextcloud queries the public Nextcloud App Store before checking local folders. You may see `Could not download app artcraft, it was not found on the appstore` followed immediately by `installation successful` / `artcraft enabled`. This is standard Nextcloud behavior for custom apps and confirms the local extension was successfully activated.
