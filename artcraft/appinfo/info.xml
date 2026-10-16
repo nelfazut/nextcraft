@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>artcraft</id>
+    <name>PhotoCraft</name>
+    <summary>Éditeur créatif PSD et matriciel WebAssembly haute performance pour Nextcloud</summary>
+    <description><![CDATA[Intégration transparente du studio de retouche PhotoCraft dans Nextcloud :
+- Moteur WebAssembly (Rust) compilé et exécuté côté client avec accélération GPU
+- Support natif des projets PSD Photoshop et formats graphiques standards (.psd, .craft, .png, .jpg, .webp)
+- Édition directe intégrée aux menus natifs et raccourcis clavier
+- Sauvegarde automatique en direct avec versioning Nextcloud
+- Enregistrement sous natif Nextcloud (dialogue de dossiers et nommage sécurisé)
+- Verrouillage exclusif collaboratif (File Locking) et mode lecture seule
+- Prise en charge des partages publics par lien]]></description>
+    <version>1.1.0</version>
+    <licence>agpl</licence>
+    <author>ArtCraft Team</author>
+    <namespace>ArtCraft</namespace>
+    <category>multimedia</category>
+    <category>office</category>
+    <website>https://github.com/artcraft/nextcraft</website>
+    <bugs>https://github.com/artcraft/nextcraft/issues</bugs>
+    <dependencies>
+        <nextcloud min-version="27" max-version="36"/>
+    </dependencies>
+    <types>
+        <filesystem/>
+        <prevent_group_restriction/>
+    </types>
+</info>

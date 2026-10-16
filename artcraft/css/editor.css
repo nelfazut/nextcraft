@@ -1,0 +1,472 @@
+:root {
+    --bg-workspace: #262626;
+    --bg-panel: #262626;
+    --bg-panel-hover: #383838;
+    --border-color: #383838;
+    --text-primary: #e6e6e6;
+    --text-secondary: #999999;
+    --accent-blue: #204574;
+    --accent-blue-hover: #27548d;
+    --accent-green: #52c41a;
+    --accent-warning: #eab308;
+    --accent-danger: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#content.app-artcraft {
+    position: fixed !important;
+    top: var(--header-height, 50px) !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - var(--header-height, 50px)) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    z-index: 100 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background-color: var(--bg-workspace) !important;
+}
+
+#artcraft-app {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-color: var(--bg-workspace);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ==========================================================================
+   Splash Screen
+   ========================================================================== */
+#artcraft-splash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1e1e1e;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#artcraft-splash.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    display: none !important;
+}
+
+.splash-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 380px;
+    color: var(--text-primary);
+}
+
+.splash-logo {
+    margin-bottom: 1.25rem;
+}
+
+.splash-content h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.4rem;
+}
+
+.splash-content p {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.splash-progress-bar {
+    width: 240px;
+    height: 5px;
+    background: #333333;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.splash-progress-fill {
+    height: 100%;
+    background: #2b5ca5;
+    transition: width 0.3s ease;
+}
+
+#splash-percent {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   Workspace & PhotoCraft Studio Viewport
+   ========================================================================== */
+.artcraft-workspace {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+    background: #262626;
+    width: 100%;
+    height: 100%;
+}
+
+.studio-container {
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background: #262626;
+}
+
+#photocraft-iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background: #262626;
+}
+
+.hidden, [style*="display: none"], [style*="display:none"] {
+    display: none !important;
+}
+
+/* ==========================================================================
+   Modals & Notifications Studio
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-window {
+    background: #262626;
+    border: 1px solid #383838;
+    border-radius: 6px;
+    width: 440px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid #383838;
+}
+
+.modal-header h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e6e6e6;
+}
+
+.modal-title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    color: #888888;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-close-btn:hover {
+    color: #ffffff;
+}
+
+.modal-body {
+    padding: 14px;
+}
+
+.modal-choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.choice-card,
+#artcraft-app .choice-card,
+#artcraft-app button.choice-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 16px 12px !important;
+    background: #1e1e1e !important;
+    border: 1px solid #383838 !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+    color: #cccccc !important;
+    box-shadow: none !important;
+}
+
+.choice-card:hover,
+#artcraft-app .choice-card:hover,
+#artcraft-app button.choice-card:hover {
+    border-color: #2b5ca5 !important;
+    background: #242a35 !important;
+    color: #ffffff !important;
+}
+
+.choice-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    color: #60a5fa;
+}
+
+#artcraft-app .choice-card h4,
+.choice-card h4 {
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    margin-bottom: 0.25rem !important;
+    color: #eeeeee !important;
+}
+
+#artcraft-app .choice-card p,
+.choice-card p {
+    font-size: 11px !important;
+    color: #999999 !important;
+    line-height: 1.3 !important;
+}
+
+.hidden-file-input {
+    display: none;
+}
+
+/* Sélecteur de mode d'importation (Calque vs Nouvel onglet) */
+.import-mode-selector {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #333333;
+}
+
+.mode-selector-title {
+    display: block;
+    font-size: 11px;
+    color: #aaaaaa;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.mode-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.mode-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: #1a1a1a;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.mode-option:hover {
+    background: #222222;
+    border-color: #444444;
+}
+
+.mode-option.active {
+    background: #1c2633;
+    border-color: #2b5ca5;
+}
+
+.mode-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888888;
+}
+
+.mode-option.active .mode-icon {
+    color: #60a5fa;
+}
+
+.mode-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.mode-text strong {
+    font-size: 11px;
+    color: #cccccc;
+    font-weight: 600;
+}
+
+.mode-option.active .mode-text strong {
+    color: #ffffff;
+}
+
+.mode-text span {
+    font-size: 9.5px;
+    color: #777777;
+    margin-top: 1px;
+}
+
+.hidden-radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Formulaires Modaux */
+.save-as-form {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 11px;
+    color: #aaaaaa;
+    font-weight: 500;
+}
+
+.modal-input {
+    background: #1a1a1a;
+    border: 1px solid #383838;
+    border-radius: 3px;
+    color: #e6e6e6;
+    font-size: 12px;
+    padding: 6px 10px;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.modal-input:focus {
+    border-color: #2b5ca5;
+    box-shadow: 0 0 0 1px #2b5ca5;
+}
+
+.save-as-folder-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 3px;
+    padding: 6px 8px;
+    font-size: 11px;
+}
+
+.folder-label {
+    color: #888888;
+}
+
+.folder-path {
+    color: #60a5fa;
+    font-family: monospace;
+}
+
+.modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid #383838;
+    background: #202020;
+}
+
+.modal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.modal-btn.secondary {
+    background: #333333;
+    border: 1px solid #444444;
+    color: #cccccc;
+}
+
+.modal-btn.secondary:hover {
+    background: #3f3f3f;
+    color: #ffffff;
+}
+
+.modal-btn.primary {
+    background: #204574;
+    border: 1px solid #2e5f9e;
+    color: #ffffff;
+}
+
+.modal-btn.primary:hover {
+    background: #27548d;
+    border-color: #3d79c6;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e1e1e;
+    border: 1px solid #383838;
+    color: #e6e6e6;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    z-index: 1200;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
