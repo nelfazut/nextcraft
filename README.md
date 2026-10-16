@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/badge/version-1.1.0-emerald.svg)](package.json)
 [![WebAssembly](https://img.shields.io/badge/Engine-WebAssembly%20%2F%20Rust-orange?logo=webassembly&logoColor=white)](https://webassembly.org/)
 [![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](test/test_artcraft.js)
-
+## This repo was totally vibe coded using gemini 3.8 flash. I just put it here if you want to use it. If anyone is willing to take over this project, contact me and i'll do the necessary things. I am not sure about maintaining it myself in the future.
 **NextCraft** is a professional raster and vector creative studio integrated natively into **Nextcloud Files**, powered by the **PhotoCraft** graphics engine compiled to **WebAssembly (Rust)** with local GPU acceleration.
 
 It delivers a seamless user experience inspired by OnlyOffice: **0% CPU load on the server**, transparent persistence on your Nextcloud storage, automated file versioning, and secure collaboration via exclusive file locking.
