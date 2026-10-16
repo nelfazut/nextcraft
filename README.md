@@ -129,6 +129,9 @@ An automated shell script is provided at the repository root:
 
 The script copies the files, adjusts ownership, and executes `occ app:enable artcraft` automatically.
 
+> [!NOTE]
+> When enabling the app for the first time via `occ app:enable artcraft`, Nextcloud queries the public Nextcloud App Store before checking local folders. You may see `Could not download app artcraft, it was not found on the appstore` followed immediately by `installation successful` / `artcraft enabled`. This is standard Nextcloud behavior for custom apps and confirms the local extension was successfully activated.
+
 ---
 
 ### Method 3: Bare-Metal Server Installation (Debian / Ubuntu / TrueNAS)

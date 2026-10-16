@@ -44,12 +44,16 @@ echo ""
 
 # 5. Activation dans le conteneur Nextcloud
 if command -v docker &> /dev/null && docker ps | grep -q "$CONTAINER_NAME"; then
+    echo "-> Ajustement des permissions conteneur ($CONTAINER_NAME)..."
+    docker exec "$CONTAINER_NAME" chown -R www-data:www-data /var/www/html/custom_apps/artcraft 2>/dev/null || true
     echo "-> Activation de l'extension dans le conteneur Nextcloud ($CONTAINER_NAME)..."
     docker exec -u www-data "$CONTAINER_NAME" php occ app:enable artcraft || true
     echo "-> Mise à jour du cache d'assets..."
     docker exec -u www-data "$CONTAINER_NAME" php occ maintenance:repair --include-expensive || true
     echo "[✓] Extension ArtCraft activée avec succès dans Nextcloud !"
 elif command -v podman &> /dev/null && podman ps | grep -q "$CONTAINER_NAME"; then
+    echo "-> Ajustement des permissions conteneur ($CONTAINER_NAME)..."
+    podman exec "$CONTAINER_NAME" chown -R www-data:www-data /var/www/html/custom_apps/artcraft 2>/dev/null || true
     echo "-> Activation via podman ($CONTAINER_NAME)..."
     podman exec -u www-data "$CONTAINER_NAME" php occ app:enable artcraft || true
     echo "[✓] Extension activée via Podman !"
