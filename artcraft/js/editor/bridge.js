@@ -8,6 +8,8 @@ window.PhotoCraft = window.PhotoCraft || {};
 window.PhotoCraft.Bridge = (function () {
     'use strict';
 
+    const t = (text, vars) => (window.PhotoCraft && window.PhotoCraft.t ? window.PhotoCraft.t(text, vars) : text);
+
     let isSaving = false;
 
     async function initStudio(config) {
@@ -22,7 +24,7 @@ window.PhotoCraft.Bridge = (function () {
             baseUrl
         } = config;
 
-        window.PhotoCraft.UI.updateSplash(35, 'Initialisation du studio PhotoCraft GPU...');
+        window.PhotoCraft.UI.updateSplash(35, t('Initializing PhotoCraft GPU studio...'));
         const iframe = document.getElementById('photocraft-iframe');
         if (!iframe) return;
 
@@ -31,7 +33,7 @@ window.PhotoCraft.Bridge = (function () {
         const loadAndOpenDoc = async () => {
             if (docOpened) return;
             try {
-                window.PhotoCraft.UI.updateSplash(55, 'Chargement du document Nextcloud...');
+                window.PhotoCraft.UI.updateSplash(55, t('Loading document from Nextcloud...'));
                 const loadUrl = isPublic
                     ? `${baseUrl}/public/api/${publicToken}/load`
                     : `${baseUrl}/api/file/${fileId}/load`;
@@ -72,13 +74,13 @@ window.PhotoCraft.Bridge = (function () {
                         ctx.fillStyle = '#ffffff';
                         ctx.fillRect(0, 0, 1920, 1080);
                         blob = await new Promise(r => offscreen.toBlob(r, 'image/png'));
-                        docName = fileName || 'Projet PhotoCraft.craft';
+                        docName = fileName || (t('PhotoCraft Project') + '.craft');
                     }
 
                     return { blob, docName };
                 });
 
-                window.PhotoCraft.UI.updateSplash(75, 'Attente du moteur PhotoCraft GPU...');
+                window.PhotoCraft.UI.updateSplash(75, t('Waiting for PhotoCraft GPU engine...'));
                 let retries = 0;
                 while (retries < 150) {
                     try {
@@ -96,7 +98,7 @@ window.PhotoCraft.Bridge = (function () {
                 if (win && typeof win.openDocumentFromBlob === 'function') {
                     await win.openDocumentFromBlob(blob, docName);
                     docOpened = true;
-                    window.PhotoCraft.UI.updateSplash(100, 'Studio prêt !');
+                    window.PhotoCraft.UI.updateSplash(100, t('Studio ready!'));
                 } else {
                     console.warn('[PhotoCraft] openDocumentFromBlob indisponible sur le studio');
                 }
@@ -119,7 +121,7 @@ window.PhotoCraft.Bridge = (function () {
         }
 
         if (isReadOnly) {
-            window.PhotoCraft.UI.showToast(`Mode lecture seule : Fichier en cours d'édition par ${lockedBy || 'un autre utilisateur'}.`, 6000);
+            window.PhotoCraft.UI.showToast(t('Read-only mode: File is currently being edited by %s.', [lockedBy || '...']), 6000);
         }
     }
 
@@ -142,10 +144,10 @@ window.PhotoCraft.Bridge = (function () {
             }
 
             window.PhotoCraft.State.registerTrackedDocument(result.fileId, result.name, targetDir, false);
-            window.PhotoCraft.UI.showToast('Nouveau fichier créé dans Nextcloud : ' + result.name, 4500);
+            window.PhotoCraft.UI.showToast(t('New file created in Nextcloud: %s', [result.name]), 4500);
         } catch (err) {
             console.error('[PhotoCraft] Erreur lors de l\'enregistrement sous :', err);
-            window.PhotoCraft.UI.showToast('Erreur : ' + err.message, 5000);
+            window.PhotoCraft.UI.showToast(t('Error during save as: ') + err.message, 5000);
         } finally {
             isSaving = false;
         }
@@ -171,7 +173,7 @@ window.PhotoCraft.Bridge = (function () {
             const tracked = window.PhotoCraft.State.findTrackedDocument(downloadName);
 
             if (isExportFormat && (!tracked || !tracked.fileName.toLowerCase().endsWith('.' + ext))) {
-                window.PhotoCraft.UI.showToast('Exportation de "' + downloadName + '" vers Nextcloud...');
+                window.PhotoCraft.UI.showToast(t('Exporting "%s" to Nextcloud...', [downloadName]));
                 try {
                     const url = `${baseUrl}/api/file/save-as?dir=${encodeURIComponent(currentDir)}&name=${encodeURIComponent(downloadName)}`;
                     const response = await fetch(url, {
@@ -184,13 +186,13 @@ window.PhotoCraft.Bridge = (function () {
                     });
                     const result = await response.json();
                     if (response.ok && result.success) {
-                        window.PhotoCraft.UI.showToast('Exportation enregistrée dans Nextcloud : ' + result.name, 4000);
+                        window.PhotoCraft.UI.showToast(t('Export saved in Nextcloud: %s', [result.name]), 4000);
                     } else {
                         throw new Error(result.error || `HTTP ${response.status}`);
                     }
                 } catch (err) {
                     console.error('[PhotoCraft] Erreur exportation image :', err);
-                    window.PhotoCraft.UI.showToast('Erreur exportation : ' + err.message, 5000);
+                    window.PhotoCraft.UI.showToast(t('Export error: ') + err.message, 5000);
                 }
                 return;
             }
@@ -219,11 +221,11 @@ window.PhotoCraft.Bridge = (function () {
                     }
 
                     if (!isAutosave) {
-                        window.PhotoCraft.UI.showToast(`"${tracked.fileName}" enregistré dans Nextcloud`, 2500);
+                        window.PhotoCraft.UI.showToast(t('"%s" saved in Nextcloud', [tracked.fileName]), 2500);
                     }
                 } catch (err) {
                     console.error('[PhotoCraft] Erreur lors de la sauvegarde :', err);
-                    window.PhotoCraft.UI.showToast('Erreur d\'enregistrement : ' + err.message, 5000);
+                    window.PhotoCraft.UI.showToast(t('Error saving: ') + err.message, 5000);
                 } finally {
                     isSaving = false;
                 }
@@ -240,7 +242,7 @@ window.PhotoCraft.Bridge = (function () {
     async function openDocumentFromNextcloudPath(path, baseUrl) {
         if (!path) return;
         try {
-            window.PhotoCraft.UI.showToast('Chargement du document Nextcloud...', 2500);
+            window.PhotoCraft.UI.showToast(t('Loading document from Nextcloud...'), 2500);
             const infoUrl = `${baseUrl}/api/file/info?path=${encodeURIComponent(path)}`;
             let docFileId = null;
             let docFileName = path.split('/').pop() || 'Document.craft';
@@ -280,14 +282,14 @@ window.PhotoCraft.Bridge = (function () {
                 if (docFileId) {
                     const docDir = path.substring(0, path.lastIndexOf('/')) || '/';
                     window.PhotoCraft.State.registerTrackedDocument(docFileId, docFileName, docDir, false);
-                    window.PhotoCraft.UI.showToast(`"${docFileName}" ouvert avec sauvegarde automatique Nextcloud !`, 3500);
+                    window.PhotoCraft.UI.showToast(t('"%s" opened with automatic Nextcloud save!', [docFileName]), 3500);
                 } else {
-                    window.PhotoCraft.UI.showToast(`"${docFileName}" ouvert dans un nouvel onglet`, 3000);
+                    window.PhotoCraft.UI.showToast(t('"%s" opened in a new tab', [docFileName]), 3000);
                 }
             }
         } catch (err) {
             console.error('[PhotoCraft] Erreur ouverture document Nextcloud:', err);
-            window.PhotoCraft.UI.showToast('Erreur ouverture document : ' + err.message, 5000);
+            window.PhotoCraft.UI.showToast(t('Failed to open document: ') + err.message, 5000);
         }
     }
 
@@ -298,12 +300,12 @@ window.PhotoCraft.Bridge = (function () {
         if (mode === 'tab') {
             if (typeof iframe.contentWindow.openDocumentFromBlob === 'function') {
                 iframe.contentWindow.openDocumentFromBlob(blobOrFile, name || 'Image.png');
-                window.PhotoCraft.UI.showToast('Image ouverte dans un nouvel onglet');
+                window.PhotoCraft.UI.showToast(t('Image opened in a new tab'));
             }
         } else {
             if (typeof iframe.contentWindow.insertImageAsLayer === 'function') {
                 iframe.contentWindow.insertImageAsLayer(blobOrFile, name || 'Image.png');
-                window.PhotoCraft.UI.showToast('Image insérée comme calque');
+                window.PhotoCraft.UI.showToast(t('Image inserted as a layer'));
             }
         }
     }

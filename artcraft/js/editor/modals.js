@@ -13,6 +13,8 @@ window.PhotoCraft = window.PhotoCraft || {};
 window.PhotoCraft.Modals = (function () {
     'use strict';
 
+    const t = (text, vars) => (window.PhotoCraft && window.PhotoCraft.t ? window.PhotoCraft.t(text, vars) : text);
+
     let currentImportMode = 'layer';
 
     // =========================================================================
@@ -66,17 +68,17 @@ window.PhotoCraft.Modals = (function () {
             btnPickNas.addEventListener('click', () => {
                 if (window.OC && OC.dialogs && OC.dialogs.filepicker) {
                     OC.dialogs.filepicker(
-                        'Sélectionner une image dans Nextcloud',
+                        t('Select an image in Nextcloud'),
                         async (path) => {
                             try {
-                                window.PhotoCraft.UI.showToast('Chargement de l\'image Nextcloud...', 2000);
+                                window.PhotoCraft.UI.showToast(t('Loading image from Nextcloud...'), 2000);
                                 const webdavUrl = OC.linkToRemote('webdav') + path;
                                 const res = await fetch(webdavUrl);
                                 const blob = await res.blob();
                                 const imgName = path.split('/').pop() || 'Image.png';
                                 handleImage(blob, imgName);
                             } catch (err) {
-                                window.PhotoCraft.UI.showToast('Erreur chargement image : ' + err.message);
+                                window.PhotoCraft.UI.showToast(t('Failed to load image: ') + err.message);
                             }
                         },
                         false,
@@ -110,7 +112,7 @@ window.PhotoCraft.Modals = (function () {
                 if (modal) modal.classList.add('hidden');
                 if (window.OC && OC.dialogs && OC.dialogs.filepicker) {
                     OC.dialogs.filepicker(
-                        'Ouvrir un document Nextcloud dans PhotoCraft',
+                        t('Open a Nextcloud document in PhotoCraft'),
                         (path) => {
                             if (typeof onDocumentChosen === 'function') {
                                 onDocumentChosen(path);
@@ -133,7 +135,7 @@ window.PhotoCraft.Modals = (function () {
                     const iframe = document.getElementById('photocraft-iframe');
                     if (iframe && iframe.contentWindow && typeof iframe.contentWindow.openDocumentFromBlob === 'function') {
                         iframe.contentWindow.openDocumentFromBlob(file, file.name);
-                        window.PhotoCraft.UI.showToast(`Fichier local "${file.name}" ouvert`);
+                        window.PhotoCraft.UI.showToast(t('Local file "%s" opened', [file.name]));
                     }
                     localInput.value = '';
                     if (modal) modal.classList.add('hidden');
@@ -181,7 +183,7 @@ window.PhotoCraft.Modals = (function () {
                     return;
                 }
                 try {
-                    window.PhotoCraft.UI.showToast('Renommage du document...', 2000);
+                    window.PhotoCraft.UI.showToast(t('Renaming document...'), 2000);
                     const res = await fetch(`${baseUrl}/api/file/${fileId}/rename`, {
                         method: 'POST',
                         headers: {
@@ -192,7 +194,7 @@ window.PhotoCraft.Modals = (function () {
                     });
                     const json = await res.json();
                     if (res.ok && json.success) {
-                        window.PhotoCraft.UI.showToast(`Document renommé en "${json.newName}"`, 3000);
+                        window.PhotoCraft.UI.showToast(t('Document renamed to "%s"', [json.newName]), 3000);
                         if (typeof onRenamed === 'function') {
                             onRenamed(json.newName);
                         }
@@ -201,7 +203,7 @@ window.PhotoCraft.Modals = (function () {
                         throw new Error(json.error || `HTTP ${res.status}`);
                     }
                 } catch (e) {
-                    window.PhotoCraft.UI.showToast('Erreur renommage : ' + e.message, 4000);
+                    window.PhotoCraft.UI.showToast(t('Failed to rename: ') + e.message, 4000);
                 }
             };
 
@@ -257,7 +259,7 @@ window.PhotoCraft.Modals = (function () {
 
         if (btnExitSave) {
             btnExitSave.addEventListener('click', async () => {
-                window.PhotoCraft.UI.showToast('Enregistrement en cours...', 2000);
+                window.PhotoCraft.UI.showToast(t('Saving...'), 2000);
                 if (typeof onSaveBeforeExit === 'function') {
                     await onSaveBeforeExit();
                 }
@@ -278,17 +280,17 @@ window.PhotoCraft.Modals = (function () {
         if (window.OC && OC.dialogs && typeof OC.dialogs.filepicker === 'function') {
             const startDir = currentDir || '/';
             OC.dialogs.filepicker(
-                'Enregistrer sous dans Nextcloud - Choisir le dossier de destination',
+                t('Save as in Nextcloud - Choose destination folder'),
                 (chosenDir) => {
                     const targetDir = chosenDir || startDir;
                     setTimeout(() => {
                         if (typeof OC.dialogs.prompt === 'function') {
                             OC.dialogs.prompt(
-                                'Saisissez le nom du nouveau fichier pour le dossier "' + targetDir + '" :',
-                                'Enregistrer sous dans Nextcloud',
+                                t('Enter the new file name for folder "%s":', [targetDir]),
+                                t('Save as in Nextcloud'),
                                 async (confirmed, enteredName) => {
                                     if (!confirmed || !enteredName || !enteredName.trim()) {
-                                        window.PhotoCraft.UI.showToast('Enregistrement sous annulé');
+                                        window.PhotoCraft.UI.showToast(t('Save as cancelled'));
                                         return;
                                     }
                                     let finalName = enteredName.trim();
@@ -302,7 +304,7 @@ window.PhotoCraft.Modals = (function () {
                                     }
                                 },
                                 null,
-                                'Nom du fichier (.craft)',
+                                t('File name (.craft)'),
                                 false
                             );
 
@@ -347,7 +349,7 @@ window.PhotoCraft.Modals = (function () {
                 { allowDirectoryChooser: true }
             );
         } else {
-            const chosenName = prompt('Nom du nouveau fichier dans Nextcloud (.craft) :', defaultName);
+            const chosenName = prompt(t('File name (.craft)') + ' :', defaultName);
             if (chosenName && chosenName.trim() && typeof onPerformSaveAs === 'function') {
                 onPerformSaveAs(currentDir, chosenName.trim(), blob);
             }

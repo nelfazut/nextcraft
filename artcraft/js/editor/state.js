@@ -51,7 +51,8 @@ window.PhotoCraft.State = (function () {
     function getDefaultSaveAsName(tabName) {
         let name = (tabName || '').trim();
         if (!name || name === 'Image.png' || name === 'Nouveau_Fichier.png') {
-            name = 'Projet PhotoCraft.craft';
+            const defaultBase = (window.PhotoCraft && window.PhotoCraft.t) ? window.PhotoCraft.t('PhotoCraft Project') : 'PhotoCraft Project';
+            name = defaultBase + '.craft';
         }
         if (/\.(png|jpe?g|webp|gif|svg|bmp|psd|tiff?)$/i.test(name)) {
             name = name.replace(/\.[^/.]+$/, '.craft');

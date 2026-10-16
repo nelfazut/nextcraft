@@ -2,6 +2,8 @@
 /** @var array $_ */
 use OCP\Util;
 
+$l = \OC::$server->getL10N('artcraft');
+
 Util::addStyle('artcraft', 'editor');
 Util::addScript('artcraft', 'editor/ui');
 Util::addScript('artcraft', 'editor/state');
@@ -25,8 +27,8 @@ Util::addScript('artcraft', 'editor');
                     <path d="M28 72L50 28L72 72H58L50 54L42 72H28Z" fill="white"/>
                 </svg>
             </div>
-            <h2>ArtCraft Public Viewer</h2>
-            <p id="splash-status">Chargement du document partagé...</p>
+            <h2><?= p($l->t('PhotoCraft Public Viewer')) ?></h2>
+            <p id="splash-status"><?= p($l->t('Loading shared document...')) ?></p>
             <div class="splash-progress-bar">
                 <div id="splash-progress" class="splash-progress-fill" style="width: 40%;"></div>
             </div>
@@ -43,7 +45,7 @@ Util::addScript('artcraft', 'editor');
                 <span class="status-icon" id="status-icon">
                     <svg class="ui-icon status-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                 </span>
-                <span class="status-text" id="status-text">Prêt</span>
+                <span class="status-text" id="status-text"><?= p($l->t('Ready')) ?></span>
             </div>
         </div>
 
@@ -51,16 +53,16 @@ Util::addScript('artcraft', 'editor');
             <?php if ($_['isReadOnly']): ?>
                 <div class="readonly-badge">
                     <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
-                    Consultation uniquement
+                    <?= p($l->t('View only')) ?>
                 </div>
             <?php else: ?>
                 <div class="readonly-badge" style="background: rgba(34, 197, 94, 0.15); color: #16a34a;">
                     <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                    Édition autorisée
+                    <?= p($l->t('Editing allowed')) ?>
                 </div>
             <?php endif; ?>
 
-            <button id="btn-fullscreen" class="topbar-btn" title="Plein écran">
+            <button id="btn-fullscreen" class="topbar-btn" title="<?= p($l->t('Fullscreen')) ?>">
                 <svg class="ui-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
             </button>
         </div>

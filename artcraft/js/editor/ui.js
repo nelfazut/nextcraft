@@ -5,6 +5,24 @@
 
 window.PhotoCraft = window.PhotoCraft || {};
 
+window.PhotoCraft.t = function (text, vars) {
+    let translated = text;
+    if (typeof window.t === 'function') {
+        translated = window.t('artcraft', text, vars);
+    } else if (window.OC && window.OC.L10N && typeof window.OC.L10N.translate === 'function') {
+        translated = window.OC.L10N.translate('artcraft', text, vars);
+    }
+    if (vars) {
+        if (Array.isArray(vars)) {
+            let i = 0;
+            translated = translated.replace(/%s/g, () => vars[i++] ?? '');
+        } else if (typeof vars === 'object') {
+            translated = translated.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '');
+        }
+    }
+    return translated;
+};
+
 window.PhotoCraft.UI = (function () {
     'use strict';
 
