@@ -10,9 +10,11 @@ use OCP\Util;
 use OCP\Files\Template\RegisterTemplateCreatorEvent;
 use OCP\Files\Template\FileCreatedFromTemplateEvent;
 use OCP\DirectEditing\RegisterDirectEditorEvent;
+use OCP\Navigation\Events\LoadAdditionalEntriesEvent;
 use OCA\ArtCraft\Listeners\RegisterTemplateFileCreatorListener;
 use OCA\ArtCraft\Listeners\CreateFromTemplateListener;
 use OCA\ArtCraft\Listeners\DirectEditorListener;
+use OCA\ArtCraft\Listeners\LoadNavigationEntriesListener;
 
 class Application extends App implements IBootstrap {
     public const APP_ID = 'artcraft';
@@ -22,6 +24,9 @@ class Application extends App implements IBootstrap {
     }
 
     public function register(IRegistrationContext $context): void {
+        // Enregistrement de l'application dans la barre de navigation principale Nextcloud
+        $context->registerEventListener(LoadAdditionalEntriesEvent::class, LoadNavigationEntriesListener::class);
+
         // Enregistrement natif des créateurs de modèles dans le menu "+" de Fichiers (avec icônes SVG)
         $context->registerEventListener(RegisterTemplateCreatorEvent::class, RegisterTemplateFileCreatorListener::class);
         $context->registerEventListener(FileCreatedFromTemplateEvent::class, CreateFromTemplateListener::class);

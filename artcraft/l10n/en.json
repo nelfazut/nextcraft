@@ -75,7 +75,9 @@
         "Insufficient permissions (read only)": "Insufficient permissions (read only)",
         "Missing export data": "Missing export data",
         "Base64 decoding failed": "Base64 decoding failed",
-        "Ouvrir dans PhotoCraft": "Open in PhotoCraft"
+        "Ouvrir dans PhotoCraft": "Open in PhotoCraft",
+        "Creating new blank canvas...": "Creating new blank canvas...",
+        "New document (unsaved)": "New document (unsaved)"
     },
     "pluralForm": "nplurals=2; plural=(n != 1);"
 }

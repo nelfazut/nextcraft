@@ -182,6 +182,14 @@ window.PhotoCraft.Modals = (function () {
                     close();
                     return;
                 }
+                if (!fileId || fileId === 0) {
+                    if (typeof onRenamed === 'function') {
+                        onRenamed(newName);
+                    }
+                    window.PhotoCraft.UI.showToast(t('Document renamed to "%s"', [newName]), 3000);
+                    close();
+                    return;
+                }
                 try {
                     window.PhotoCraft.UI.showToast(t('Renaming document...'), 2000);
                     const res = await fetch(`${baseUrl}/api/file/${fileId}/rename`, {

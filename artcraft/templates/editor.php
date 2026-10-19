@@ -154,7 +154,7 @@ $l = \OC::$server->getL10N('artcraft');
                     </div>
                     <div class="save-as-folder-info" style="margin-top: 6px;">
                         <span class="folder-label"><?= p($l->t('File ID:')) ?></span>
-                        <span class="folder-path"><?= (int)$_['fileId'] ?></span>
+                        <span class="folder-path"><?= (int)$_['fileId'] > 0 ? (int)$_['fileId'] : p($l->t('New document (unsaved)')) ?></span>
                     </div>
                 </div>
             </div>

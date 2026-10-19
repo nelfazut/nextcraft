@@ -22,6 +22,16 @@
     <dependencies>
         <nextcloud min-version="27" max-version="36"/>
     </dependencies>
+    <navigations>
+        <navigation>
+            <id>artcraft</id>
+            <name>PhotoCraft</name>
+            <route>artcraft.page.index</route>
+            <icon>app.svg</icon>
+            <order>10</order>
+            <type>link</type>
+        </navigation>
+    </navigations>
     <types>
         <filesystem/>
         <prevent_group_restriction/>

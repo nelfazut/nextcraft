@@ -33,52 +33,68 @@ window.PhotoCraft.Bridge = (function () {
         const loadAndOpenDoc = async () => {
             if (docOpened) return;
             try {
-                window.PhotoCraft.UI.updateSplash(55, t('Loading document from Nextcloud...'));
-                const loadUrl = isPublic
-                    ? `${baseUrl}/public/api/${publicToken}/load`
-                    : `${baseUrl}/api/file/${fileId}/load`;
-
-                const fetchPromise = fetch(loadUrl).then(async response => {
-                    let blob = null;
-                    let docName = fileName;
-                    if (response.ok) {
-                        const arrayBuffer = await response.arrayBuffer();
-                        if (arrayBuffer.byteLength > 0) {
-                            const bytes = new Uint8Array(arrayBuffer);
-                            const isPsd = bytes.length >= 4 && bytes[0] === 0x38 && bytes[1] === 0x42 && bytes[2] === 0x50 && bytes[3] === 0x53;
-                            const isPng = bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
-                            const isJpg = bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
-
-                            if (isPsd) {
-                                blob = new Blob([arrayBuffer], { type: 'image/vnd.adobe.photoshop' });
-                                docName = fileName;
-                            } else if (isPng) {
-                                blob = new Blob([arrayBuffer], { type: 'image/png' });
-                                docName = fileName.replace(/\.[^/.]+$/, '') + '.png';
-                            } else if (isJpg) {
-                                blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-                                docName = fileName.replace(/\.[^/.]+$/, '') + '.jpg';
-                            } else {
-                                blob = new Blob([arrayBuffer]);
-                                docName = fileName;
-                            }
-                        }
-                    }
-
-                    // Fallback toile vierge 1920x1080 si le fichier est vide
-                    if (!blob) {
+                let fetchPromise;
+                if (!fileId || fileId === 0) {
+                    window.PhotoCraft.UI.updateSplash(55, t('Creating new blank canvas...'));
+                    fetchPromise = (async () => {
                         const offscreen = document.createElement('canvas');
                         offscreen.width = 1920;
                         offscreen.height = 1080;
                         const ctx = offscreen.getContext('2d');
                         ctx.fillStyle = '#ffffff';
                         ctx.fillRect(0, 0, 1920, 1080);
-                        blob = await new Promise(r => offscreen.toBlob(r, 'image/png'));
-                        docName = fileName || (t('PhotoCraft Project') + '.craft');
-                    }
+                        const blob = await new Promise(r => offscreen.toBlob(r, 'image/png'));
+                        const docName = fileName || (t('PhotoCraft Project') + '.craft');
+                        return { blob, docName };
+                    })();
+                } else {
+                    window.PhotoCraft.UI.updateSplash(55, t('Loading document from Nextcloud...'));
+                    const loadUrl = isPublic
+                        ? `${baseUrl}/public/api/${publicToken}/load`
+                        : `${baseUrl}/api/file/${fileId}/load`;
 
-                    return { blob, docName };
-                });
+                    fetchPromise = fetch(loadUrl).then(async response => {
+                        let blob = null;
+                        let docName = fileName;
+                        if (response.ok) {
+                            const arrayBuffer = await response.arrayBuffer();
+                            if (arrayBuffer.byteLength > 0) {
+                                const bytes = new Uint8Array(arrayBuffer);
+                                const isPsd = bytes.length >= 4 && bytes[0] === 0x38 && bytes[1] === 0x42 && bytes[2] === 0x50 && bytes[3] === 0x53;
+                                const isPng = bytes.length >= 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47;
+                                const isJpg = bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+
+                                if (isPsd) {
+                                    blob = new Blob([arrayBuffer], { type: 'image/vnd.adobe.photoshop' });
+                                    docName = fileName;
+                                } else if (isPng) {
+                                    blob = new Blob([arrayBuffer], { type: 'image/png' });
+                                    docName = fileName.replace(/\.[^/.]+$/, '') + '.png';
+                                } else if (isJpg) {
+                                    blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+                                    docName = fileName.replace(/\.[^/.]+$/, '') + '.jpg';
+                                } else {
+                                    blob = new Blob([arrayBuffer]);
+                                    docName = fileName;
+                                }
+                            }
+                        }
+
+                        // Fallback toile vierge 1920x1080 si le fichier est vide
+                        if (!blob) {
+                            const offscreen = document.createElement('canvas');
+                            offscreen.width = 1920;
+                            offscreen.height = 1080;
+                            const ctx = offscreen.getContext('2d');
+                            ctx.fillStyle = '#ffffff';
+                            ctx.fillRect(0, 0, 1920, 1080);
+                            blob = await new Promise(r => offscreen.toBlob(r, 'image/png'));
+                            docName = fileName || (t('PhotoCraft Project') + '.craft');
+                        }
+
+                        return { blob, docName };
+                    });
+                }
 
                 window.PhotoCraft.UI.updateSplash(75, t('Waiting for PhotoCraft GPU engine...'));
                 let retries = 0;

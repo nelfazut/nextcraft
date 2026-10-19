@@ -36,33 +36,47 @@ class EditorController extends Controller {
      * @NoAdminRequired
      * @NoCSRFRequired
      */
-    public function index(int $fileId, string $dir = '/'): TemplateResponse {
+    public function index(?int $fileId = null, string $dir = '/'): TemplateResponse {
         if ($this->userId === null) {
             return new TemplateResponse('core', '403', [], 'guest');
         }
 
         try {
-            $userFolder = $this->rootFolder->getUserFolder($this->userId);
-            $files = $userFolder->getById($fileId);
-
-            if (empty($files)) {
-                return new TemplateResponse($this->appName, 'error', ['message' => 'Fichier introuvable'], 'blank');
-            }
-
-            /** @var \OCP\Files\File $file */
-            $file = $files[0];
-            $fileName = $file->getName();
-            $canWrite = ($file->getPermissions() & \OCP\Constants::PERMISSION_UPDATE) !== 0;
-            $userFolderRelativePath = $userFolder->getRelativePath($file->getPath());
-
             $urlGenerator = \OC::$server->get(\OCP\IURLGenerator::class);
             $appType = 'photocraft';
             $appTitle = 'PhotoCraft';
             $appLogo = $urlGenerator->imagePath($this->appName, 'photocraft.svg');
 
-            // Gestion du verrou exclusif
-            $lockInfo = $this->lockService->acquireLock($fileId, $this->userId, $this->userId);
-            $isReadOnly = !$canWrite || ($lockInfo['readOnly'] ?? false);
+            if ($fileId === null || $fileId <= 0) {
+                // Mode Studio Autonome (ouverture sans fichier préchargé)
+                $l = \OC::$server->getL10N($this->appName);
+                $fileName = $l->t('PhotoCraft Project') . '.craft';
+                $canWrite = true;
+                $isReadOnly = false;
+                $userFolderRelativePath = $dir ?: '/';
+                $fileSize = 0;
+                $effectiveFileId = 0;
+                $lockInfo = ['lockedBy' => $this->userId, 'readOnly' => false];
+            } else {
+                $userFolder = $this->rootFolder->getUserFolder($this->userId);
+                $files = $userFolder->getById($fileId);
+
+                if (empty($files)) {
+                    return new TemplateResponse($this->appName, 'error', ['message' => 'Fichier introuvable'], 'blank');
+                }
+
+                /** @var \OCP\Files\File $file */
+                $file = $files[0];
+                $fileName = $file->getName();
+                $canWrite = ($file->getPermissions() & \OCP\Constants::PERMISSION_UPDATE) !== 0;
+                $userFolderRelativePath = $userFolder->getRelativePath($file->getPath());
+                $fileSize = $file->getSize();
+                $effectiveFileId = $fileId;
+
+                // Gestion du verrou exclusif
+                $lockInfo = $this->lockService->acquireLock($fileId, $this->userId, $this->userId);
+                $isReadOnly = !$canWrite || ($lockInfo['readOnly'] ?? false);
+            }
 
             \OCP\Util::addStyle($this->appName, 'editor');
             \OCP\Util::addScript($this->appName, 'editor/ui');
@@ -73,10 +87,10 @@ class EditorController extends Controller {
             \OCP\Util::addScript($this->appName, 'editor');
 
             $params = [
-                'fileId' => $fileId,
+                'fileId' => $effectiveFileId,
                 'fileName' => $fileName,
                 'filePath' => $userFolderRelativePath,
-                'fileSize' => $file->getSize(),
+                'fileSize' => $fileSize,
                 'dir' => $dir,
                 'userId' => $this->userId,
                 'isReadOnly' => $isReadOnly,

@@ -76,6 +76,8 @@ OC.L10N.register(
     "Insufficient permissions (read only)": "Droits insuffisants (lecture seule)",
     "Missing export data": "Données d'exportation manquantes",
     "Base64 decoding failed": "Décodage Base64 échoué",
-    "Ouvrir dans PhotoCraft": "Ouvrir dans PhotoCraft"
+    "Ouvrir dans PhotoCraft": "Ouvrir dans PhotoCraft",
+    "Creating new blank canvas...": "Création d'une nouvelle composition vierge...",
+    "New document (unsaved)": "Nouveau document (non enregistré)"
 },
 "nplurals=2; plural=(n > 1);");

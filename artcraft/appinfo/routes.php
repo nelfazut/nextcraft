@@ -2,6 +2,9 @@
 
 return [
     'routes' => [
+        // Navigation principale Nextcloud & vue studio autonome
+        ['name' => 'page#index', 'url' => '/', 'verb' => 'GET'],
+
         // Vue principale de l'éditeur (Plein écran type OnlyOffice)
         ['name' => 'editor#index', 'url' => '/editor', 'verb' => 'GET'],
         ['name' => 'editor#studio', 'url' => '/studio', 'verb' => 'GET'],
