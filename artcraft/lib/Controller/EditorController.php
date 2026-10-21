@@ -9,8 +9,6 @@ use OCP\AppFramework\Http\ContentSecurityPolicy;
 use OCP\IRequest;
 use OCP\IUserSession;
 use OCP\Files\IRootFolder;
-use OCP\Files\NotFoundException;
-use OCP\Files\NotPermittedException;
 use OCA\ArtCraft\Service\LockService;
 
 class EditorController extends Controller {

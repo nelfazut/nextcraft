@@ -39,10 +39,6 @@ window.PhotoCraft.UI = (function () {
         setTimeout(() => toast.classList.add('hidden'), duration);
     }
 
-    function setStatus(state, message) {
-        console.log(`[PhotoCraft Status] [${state}] ${message}`);
-    }
-
     function updateSplash(percent, text) {
         if (splashProgress) splashProgress.style.width = percent + '%';
         if (splashPercent) splashPercent.textContent = percent + '%';
@@ -61,7 +57,6 @@ window.PhotoCraft.UI = (function () {
 
     return {
         showToast,
-        setStatus,
         updateSplash,
         hideSplash
     };

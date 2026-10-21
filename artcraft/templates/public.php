@@ -12,33 +12,34 @@ Util::addScript('artcraft', 'editor/modals');
 Util::addScript('artcraft', 'editor/bridge');
 Util::addScript('artcraft', 'editor');
 ?>
-
+<link rel="stylesheet" href="<?= p($_['cssUrl']) ?>?v=<?= time() ?>">
 <div id="artcraft-app"
+     data-file-id="0"
      data-token="<?= p($_['token']) ?>"
      data-file-name="<?= p($_['fileName']) ?>"
      data-readonly="<?= $_['isReadOnly'] ? 'true' : 'false' ?>"
      data-is-public="true">
 
+    <!-- Splash Screen de chargement Wasm -->
     <div id="artcraft-splash">
         <div class="splash-content">
             <div class="splash-logo">
-                <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="100" height="100" rx="24" fill="#0284c7"/>
-                    <path d="M28 72L50 28L72 72H58L50 54L42 72H28Z" fill="white"/>
-                </svg>
+                <img src="<?= p($_['appLogo']) ?>" width="64" height="64" alt="PhotoCraft" />
             </div>
-            <h2><?= p($l->t('PhotoCraft Public Viewer')) ?></h2>
-            <p id="splash-status"><?= p($l->t('Loading shared document...')) ?></p>
+            <h2>PhotoCraft</h2>
+            <p id="splash-status"><?= p($l->t('Initializing creative studio...')) ?></p>
             <div class="splash-progress-bar">
-                <div id="splash-progress" class="splash-progress-fill" style="width: 40%;"></div>
+                <div id="splash-progress" class="splash-progress-fill" style="width: 25%;"></div>
             </div>
+            <span id="splash-percent">25%</span>
         </div>
     </div>
 
+    <!-- Barre supérieure de partage public -->
     <header class="artcraft-topbar">
         <div class="topbar-left">
             <div class="brand-badge">
-                <span class="brand-title">ArtCraft</span>
+                <span class="brand-title">PhotoCraft</span>
             </div>
             <span class="public-filename"><?= p($_['fileName']) ?></span>
             <div class="status-indicator" id="status-indicator">
@@ -68,11 +69,18 @@ Util::addScript('artcraft', 'editor');
         </div>
     </header>
 
+    <!-- Zone Principale : PhotoCraft Studio Wasm plein écran -->
     <main class="artcraft-workspace">
-        <div id="viewport-container" class="viewport-container">
-            <div id="canvas-wrapper" class="canvas-wrapper">
-                <canvas id="artcraft-canvas" width="1920" height="1080"></canvas>
-            </div>
+        <div id="photocraft-studio-container" class="studio-container">
+            <iframe id="photocraft-iframe"
+                    src="<?= p($_['studioUrl']) ?>?v=<?= p($_['version']) ?>"
+                    title="<?= p($l->t('PhotoCraft Studio Wasm')) ?>"
+                    allow="fullscreen; clipboard-read; clipboard-write"
+                    allowfullscreen>
+            </iframe>
         </div>
     </main>
+
+    <!-- Notification Toast -->
+    <div id="artcraft-toast" class="toast hidden"></div>
 </div>

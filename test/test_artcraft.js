@@ -113,6 +113,24 @@ const bridgeJs = fs.readFileSync(path.join(artcraftDir, 'js/editor/bridge.js'), 
 assert(bridgeJs.includes('!fileId || fileId === 0'), 'bridge.js doit supporter directement le mode autonome');
 console.log('✓ Intégration application autonome dans le menu Nextcloud validée.');
 
+console.log('--- Test 8 : Validation de l\'intégrité du visualiseur public et nettoyage du code mort ---');
+const publicTemplatePath = path.join(artcraftDir, 'templates/public.php');
+assert(fs.existsSync(publicTemplatePath), 'public.php doit exister');
+const publicTemplate = fs.readFileSync(publicTemplatePath, 'utf8');
+assert(publicTemplate.includes('photocraft-iframe'), 'public.php doit intégrer l\'iframe PhotoCraft');
+assert(!publicTemplate.includes('artcraft-canvas'), 'public.php ne doit plus contenir le canvas 2D hérité obsolète');
+
+const publicControllerPath = path.join(artcraftDir, 'lib/Controller/PublicPageController.php');
+const publicController = fs.readFileSync(publicControllerPath, 'utf8');
+assert(publicController.includes("'studioUrl'"), 'PublicPageController doit fournir studioUrl');
+assert(publicController.includes("'appLogo'"), 'PublicPageController doit fournir appLogo');
+
+// Vérification de l'absence de fichiers morts
+assert(!fs.existsSync(path.join(artcraftDir, 'img/photocraft-official.svg')), 'photocraft-official.svg doit être supprimé');
+assert(!fs.existsSync(path.join(__dirname, 'artcraft_workspace.png')), 'artcraft_workspace.png doit être supprimé');
+assert(!fs.existsSync(path.join(__dirname, '../engine')), 'Le dossier engine/ obsolète doit être supprimé');
+console.log('✓ Visualiseur public Wasm conforme et absence de fichiers morts validée.');
+
 console.log('\n=============================================');
 console.log('🎉 TOUS LES TESTS SONT PASSÉS AVEC SUCCÈS !');
 console.log('=============================================\n');

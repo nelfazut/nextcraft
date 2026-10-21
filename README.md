@@ -271,12 +271,9 @@ nextcraft/
 │       ├── app.svg               # Application icon
 │       ├── photocraft.svg        # Official PhotoCraft logo
 │       └── mime-craft.svg        # Official .craft document icon
-├── engine/                       # Vector engine in Rust (optional/Wasm compilation)
-│   ├── Cargo.toml                # Dependencies: wasm-bindgen, web-sys, serde
-│   ├── src/                      # Rust sources (lib.rs, model.rs, renderer.rs, export.rs)
-│   └── build.sh                  # wasm-pack build script
 ├── test/
-│   └── test_artcraft.js          # Automated integrity and regression test suite
+│   ├── test_artcraft.js          # Automated integrity and regression test suite
+│   └── test_navigation_app.js    # Playwright E2E test for top bar navigation
 ├── deploy.sh                     # Automated shell deployment script
 ├── Makefile                      # Make targets (test, package, deploy)
 ├── package.json                  # Node.js dependencies and test scripts

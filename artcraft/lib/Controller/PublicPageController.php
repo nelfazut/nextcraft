@@ -48,6 +48,7 @@ class PublicPageController extends Controller {
         }
 
         $canWrite = ($share->getPermissions() & \OCP\Constants::PERMISSION_UPDATE) !== 0;
+        $urlGenerator = \OC::$server->get(\OCP\IURLGenerator::class);
 
         $params = [
             'token' => $token,
@@ -56,23 +57,29 @@ class PublicPageController extends Controller {
             'isReadOnly' => !$canWrite,
             'canWrite' => $canWrite,
             'isPublic' => true,
-            'version' => '1.0.0'
+            'version' => '1.1.0',
+            'appLogo' => $urlGenerator->imagePath($this->appName, 'photocraft.svg'),
+            'studioUrl' => $urlGenerator->linkTo($this->appName, 'web/index.html'),
+            'cssUrl' => $urlGenerator->linkTo($this->appName, 'css/editor.css'),
         ];
 
         $response = new TemplateResponse($this->appName, 'public', $params, 'blank');
 
         $csp = new ContentSecurityPolicy();
         $csp->addAllowedScriptDomain("'self'");
+        $csp->addAllowedScriptDomain("'unsafe-inline'");
         $csp->addAllowedScriptDomain("'unsafe-eval'");
         $csp->addAllowedScriptDomain("'wasm-unsafe-eval'");
-        $csp->addAllowedWorkerDomain("'self'");
-        $csp->addAllowedWorkerDomain("blob:");
+        if (method_exists($csp, 'addAllowedWorkerSrcDomain')) {
+            $csp->addAllowedWorkerSrcDomain("'self'");
+            $csp->addAllowedWorkerSrcDomain("blob:");
+        }
         $csp->addAllowedImageDomain("'self'");
         $csp->addAllowedImageDomain("data:");
         $csp->addAllowedImageDomain("blob:");
+        $csp->addAllowedMediaDomain("blob:");
         $csp->addAllowedConnectDomain("'self'");
         $csp->addAllowedFrameDomain("'self'");
-        $csp->addAllowedChildSrcDomain("'self'");
         $response->setContentSecurityPolicy($csp);
 
         return $response;

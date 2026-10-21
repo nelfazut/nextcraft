@@ -10,11 +10,6 @@ yarn-error.log*
 dist/
 build/
 
-# Rust engine build artifacts
-engine/target/
-engine/pkg/
-**/*.rs.bk
-
 # Upstream reference downloads
 upstream_web/
 

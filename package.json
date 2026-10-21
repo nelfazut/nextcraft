@@ -5,7 +5,6 @@
   "main": "artcraft/js/main.js",
   "scripts": {
     "test": "node test/test_artcraft.js",
-    "build:engine": "bash engine/build.sh",
     "deploy": "bash deploy.sh",
     "package": "tar -czvf artcraft-1.1.0.tar.gz artcraft"
   },

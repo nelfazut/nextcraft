@@ -6,7 +6,7 @@
         <div style="display: flex; justify-content: center; margin-bottom: 1.25rem;">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
         </div>
-        <h2 style="margin: 0 0 1rem; font-size: 1.5rem; font-weight: 600;">Erreur ArtCraft</h2>
+        <h2 style="margin: 0 0 1rem; font-size: 1.5rem; font-weight: 600;">Erreur PhotoCraft</h2>
         <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">
             <?= p($_['message'] ?? 'Une erreur est survenue lors de l\'accès au document.') ?>
         </p>
